@@ -1,0 +1,73 @@
+#!/usr/bin/python 
+# -*- coding:utf-8 -*-
+
+import matplotlib.pyplot as plt
+import os, sys
+import re
+import time
+import math
+import numpy as np
+
+###################################################################################################
+
+def             isNumber(string):
+    i = 0
+    while (i < len(string)):
+        if (string[i] < '0' or string[i] > '9'):
+            print "\033[31mErreur: Les arguments doivent être des nombres.\033[0m"
+            sys.exit()
+        i += 1
+
+def             checkArguments(av):
+    if (len(av) != 4):
+        print "\033[31mErreur : Le programme a besoin de 3 arguments.\033[0m"
+        sys.exit()
+
+def             fact(n):
+    i = 1
+    result = 1.0
+    while (i <= n):
+        result *= i
+        i += 1.0
+    return (result)
+
+###################################################################################################
+
+checkArguments(sys.argv)
+try:
+    sizePop = int(sys.argv[1])
+    sizeSample = int(sys.argv[2])
+    resultOpinionPoll = float(sys.argv[3])
+except:
+    print "\033[31mErreur ; Les arguments doivent être des nombres.\033[0m"
+    sys.exit()
+if (sizePop < sizeSample):
+    print "\033[31mErreur : La taille de la population doit être supérieur ou égale à la taille de l'échantillon.\033[0m"
+    sys.exit()
+if (resultOpinionPoll > 100):
+    print "\033[31mErreur : Le résultat du sondage est un pourcentage.\033[0m"
+    sys.exit()
+pourc = resultOpinionPoll / 100.0
+varpop = pourc * (1.0 - pourc)
+print (varpop)
+try:
+    var = (varpop / sizeSample) * ((sizePop - sizeSample) / (sizePop - 1.0))
+except:
+    print "\033[31mErreur: Division par 0 impossible\033[0m"
+    sys.exit()
+inter95 = ((2 * 1.96) * math.sqrt(var)) / 2 * 100
+inter99 = ((2 * 2.58) * math.sqrt(var)) / 2 * 100
+print "\033[34mTaille de la population :\t\t \033[32m%d" % sizePop
+print "\033[34mTaille de l'échantillon :\t\t \033[32m%d" % sizeSample
+print "\033[34mRésultat du sondage:\t\t\t \033[32m%.2f" % resultOpinionPoll
+print "\033[34mvariance estimée :\t\t\t \033[32m%.6f" % var
+print "\033[34mintervalle de confiance à 95%% :\t\t [\033[32m%.2f%%\033[34m ;\033[32m %.2f%%\033[34m]" % (resultOpinionPoll - inter95, resultOpinionPoll + inter95)
+print "\033[34mintervalle de confiance à 99%% :\t\t [\033[32m%.2f%%\033[34m ; \033[32m%.2f%%\033[34m]\033[0m" % (resultOpinionPoll - inter99, resultOpinionPoll + inter99)
+fichier = open("result.txt", "w")
+fichier.write("Taille de la population :\t\t %d\n" % sizePop)
+fichier.write("Taille de l'echantillon :\t\t %d\n" % sizeSample)
+fichier.write("Resultat du sondage :\t\t\t %d\n" % resultOpinionPoll)
+fichier.write("variance estimee :\t\t\t %.6f\n" % var)
+fichier.write("intervalle de confiance a 95%% :\t\t [%.2f%% ; %.2f%%]\n" % (resultOpinionPoll - inter95, resultOpinionPoll + inter95))
+fichier.write("intervalle de confiance a 99%% :\t\t [%.2f%% ; %.2f%%]\n" % (resultOpinionPoll - inter99, resultOpinionPoll + inter99))
+fichier.close
